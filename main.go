@@ -41,6 +41,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	switch path.Ext(filename) {
+	case ".sh":
+		if err := os.Chmod(filename, 0744); err != nil {
+			log.Fatal(err)
+		}
+	}
 }
 
 func writeFile(w io.Writer, filename string) error {
@@ -48,7 +54,12 @@ func writeFile(w io.Writer, filename string) error {
 	if err != nil {
 		return err
 	}
-	w.Write(content)
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	file.Write(content)
 	return nil
 }
 
