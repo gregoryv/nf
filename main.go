@@ -23,13 +23,7 @@ func main() {
 
 	switch {
 	case help:
-		w := os.Stdout
-		cli.WriteUsageTo(w)
-		fmt.Println("Files")
-		files, _ := assets.ReadDir("assets")
-		for _, f := range files {
-			fmt.Fprintln(w, "   ", f.Name())
-		}
+		writeUsage(os.Stdout, cli)
 		os.Exit(0)
 
 	case !cli.Ok():
@@ -43,7 +37,8 @@ func main() {
 	}
 	switch path.Ext(filename) {
 	case ".sh":
-		if err := os.Chmod(filename, 0744); err != nil {
+		err := os.Chmod(filename, 0744)
+		if err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -61,6 +56,15 @@ func writeFile(w io.Writer, filename string) error {
 	defer file.Close()
 	file.Write(content)
 	return nil
+}
+
+func writeUsage(w io.Writer, cli *cmdline.Parser) {
+	cli.WriteUsageTo(w)
+	fmt.Println("Files")
+	files, _ := assets.ReadDir("assets")
+	for _, f := range files {
+		fmt.Fprintln(w, "   ", f.Name())
+	}
 }
 
 //go:embed "assets/*"
