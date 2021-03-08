@@ -1,0 +1,10 @@
+New file command nf embeds static files for easy creation.
+
+## Quick start
+
+    go get -u github.com/gregoryv/nf
+
+write new MIT license file with
+
+    nf LICENSE
+

@@ -28,6 +28,13 @@ func main() {
 	case len(filenames) == 0:
 		log.Fatal("missing files")
 	}
+	err := writeFiles(filenames)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func writeFiles(filenames []string) error {
 	for _, filename := range filenames {
 		if fi, _ := os.Stat(filename); fi != nil {
 			log.Println(" skip", filename)
@@ -35,17 +42,18 @@ func main() {
 		}
 		err := writeFile(os.Stdout, filename)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		switch path.Ext(filename) {
 		case ".sh":
 			err := os.Chmod(filename, 0744)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 		}
 		log.Println("write", filename)
 	}
+	return nil
 }
 
 func writeFile(w io.Writer, filename string) error {
